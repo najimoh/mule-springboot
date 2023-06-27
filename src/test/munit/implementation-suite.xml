@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="implementation-suite.xml" />
+	<munit:test name="bookstore_get-all-books_main-flow-test" doc:id="b359cf85-d264-4115-9b0e-6443d6b867dc" >
+		<munit:behavior >
+			<munit:set-event doc:name="Set Input" doc:id="ecdce752-7d15-462f-a0db-1ee3602bd013" >
+				<munit:payload value="#[output application/json  --- readUrl('classpath://bookstoregetallbooksmainflowtest\set-event_payload.dwl')]" encoding="UTF-8" mediaType="application/json " />
+				<munit:attributes value="#[readUrl('classpath://bookstoregetallbooksmainflowtest\set-event_attributes.dwl')]" />
+				<munit:variables >
+					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://bookstoregetallbooksmainflowtest\set-event_variable_.dwl')]" />
+				</munit:variables>
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to bookstore_get-all-books_main-flow" doc:id="4c8c3d5d-80fd-46f2-97da-674b16265924" name="bookstore_get-all-books_main-flow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="8caa61bc-feaf-4ea8-807a-f09c90067132" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import bookstoregetallbooksmainflowtest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+			<munit-tools:verify-call doc:name="Verify Set Payload" doc:id="f6f16e08-1d8b-436f-a479-f5774ef83af9" processor="set-payload" times="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="bbcb6716-b752-46e1-8819-fccde6c10a57" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+			<munit-tools:verify-call doc:name="Verify Transform Message" doc:id="1c091e40-d0cf-40e6-8c94-f28b8264f63e" processor="ee:transform" atLeast="2">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="6913c320-4b82-464c-b1f0-c84c597f9fe3" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+
+
+</mule>

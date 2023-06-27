@@ -8,4 +8,7 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
         <http:listener-connection host="${http.host}" port="${http.port}" />
     </http:listener-config>
 	<configuration-properties doc:name="Configuration properties" doc:id="349585f5-6e27-453c-b5f1-a44c9c558fa9" file="properties.yaml"/>
+	<http:request-config name="HTTP_Request_configuration_google" doc:name="HTTP Request configuration" doc:id="92a54784-6391-49c1-83dd-74d59e1f55eb" >
+		<http:request-connection host="google.com" port="80" />
+	</http:request-config>
 </mule>

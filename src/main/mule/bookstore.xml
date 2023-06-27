@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd ">
-    <apikit:config name="bookstore-config" api="resource::caf54d20-f68e-465b-9ed3-6a187f9f9c28:bookstore:1.0.0:raml:zip:bookstore.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+    <apikit:config name="bookstore-config" api="resource::caf54d20-f68e-465b-9ed3-6a187f9f9c28:bookstore:1.0.1:raml:zip:bookstore.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
     <flow name="bookstore-main">
         <http:listener config-ref="bookstore-httpListenerConfig" path="/api/*">
             <http:response statusCode="#[vars.httpStatus default 200]">
@@ -154,13 +154,13 @@ output application/json
 }]]></ee:set-payload>
             </ee:message>
         </ee:transform>
-		<flow-ref doc:name="bookstore_get-all-books_main-flow" doc:id="e3736f43-fef4-4cfc-9139-ec1cf691e64a" name="bookstore_get-all-books_main-flow" />
+        <flow-ref doc:name="bookstore_get-all-books_main-flow" doc:id="e3736f43-fef4-4cfc-9139-ec1cf691e64a" name="bookstore_get-all-books_main-flow" />
     </flow>
-	<flow name="post:\books:application\json:bookstore-config">
+    <flow name="post:\books:application\json:bookstore-config">
         <logger level="INFO" message="post:\books:application\json:bookstore-config" />
-		<flow-ref doc:name="bookstore_create-book_main-flow" doc:id="c7ba72bd-654e-46c9-b412-88afc077218b" name="bookstore_create-book_main-flow" />
+        <flow-ref doc:name="bookstore_create-book_main-flow" doc:id="c7ba72bd-654e-46c9-b412-88afc077218b" name="bookstore_create-book_main-flow" />
     </flow>
-	<flow name="get:\books\(isbn):bookstore-config">
+    <flow name="get:\books\(isbn):bookstore-config">
         <ee:transform doc:name="Transform Message">
             <ee:variables>
                 <ee:set-variable variableName="isbn">attributes.uriParams.'isbn'</ee:set-variable>
@@ -184,24 +184,25 @@ output application/json
 }]]></ee:set-payload>
             </ee:message>
         </ee:transform>
-		<flow-ref doc:name="bookstore_get-book-by-id_main-flow" doc:id="243d28d8-892e-43b3-8d05-07fdfbd2e54f" name="bookstore_get-book-by-id_main-flow" />
+        <flow-ref doc:name="bookstore_get-book-by-id_main-flow" doc:id="243d28d8-892e-43b3-8d05-07fdfbd2e54f" name="bookstore_get-book-by-id_main-flow" />
     </flow>
-	<flow name="put:\books\(isbn):application\json:bookstore-config">
+    <flow name="put:\books\(isbn):application\json:bookstore-config">
         <ee:transform doc:name="Transform Message">
             <ee:variables>
-                <ee:set-variable variableName="isbn">attributes.uriParams.'isbn'</ee:set-variable>
+                <ee:set-variable variableName="isbn"><![CDATA[attributes.uriParams.'isbn']]></ee:set-variable>
+				<ee:set-variable variableName="googleBookTitle" ><![CDATA[attributes.queryParams.'googleBookTitle']]></ee:set-variable>
             </ee:variables>
         </ee:transform>
         <logger level="INFO" message="put:\books\(isbn):application\json:bookstore-config" />
-		<flow-ref doc:name="bookstore_update-book-by-id_main-flow" doc:id="52726b7f-977e-4f42-bad5-fada58c39de7" name="bookstore_update-book-by-id_main-flow"/>
+        <flow-ref doc:name="bookstore_update-book-by-id_main-flow" doc:id="52726b7f-977e-4f42-bad5-fada58c39de7" name="bookstore_update-book-by-id_main-flow" />
     </flow>
-	<flow name="delete:\books\(isbn):bookstore-config">
+    <flow name="delete:\books\(isbn):bookstore-config">
         <ee:transform doc:name="Transform Message">
             <ee:variables>
                 <ee:set-variable variableName="isbn">attributes.uriParams.'isbn'</ee:set-variable>
             </ee:variables>
         </ee:transform>
         <logger level="INFO" message="delete:\books\(isbn):bookstore-config" />
-		<flow-ref doc:name="bookstore_delete-book-by-id_main-flow" doc:id="3a0c4235-3168-4e71-afad-8e369864f2f6" name="bookstore_delete-book-by-id_main-flow"/>
+        <flow-ref doc:name="bookstore_delete-book-by-id_main-flow" doc:id="3a0c4235-3168-4e71-afad-8e369864f2f6" name="bookstore_delete-book-by-id_main-flow" />
     </flow>
 </mule>
