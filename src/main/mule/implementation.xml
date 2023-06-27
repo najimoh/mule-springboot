@@ -33,6 +33,11 @@ vars.foreachResults ++ [payload ++ counter: vars.counter]]]></ee:set-variable>
 				<logger level="INFO" doc:name="Logger" doc:id="43a97b8d-c7cc-4355-9cbf-022c04ae2268" message="ISBN more than 1000."/>
 			</otherwise>
 		</choice>
+		<error-handler >
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="4c183885-6e73-4a67-b47c-fa7b6dceedd2" type="EXPRESSION">
+				<logger level="INFO" doc:name="Logger" doc:id="150b9653-e025-4ab7-8228-b1ad30a7bf18" message="On error propagate logged."/>
+			</on-error-propagate>
+		</error-handler>
 	</flow>
 	<flow name="bookstore_create-book_main-flow" doc:id="5655f68f-2234-476d-af88-e9699b973252" >
 		<logger level="INFO" doc:name="Logger" doc:id="bb45f91a-4c5f-4f44-8b1d-d34e21952436" message="bookstore_create-book_main-flow started."/>
@@ -46,5 +51,14 @@ vars.foreachResults ++ [payload ++ counter: vars.counter]]]></ee:set-variable>
 	</flow>
 	<flow name="bookstore_delete-book-by-id_main-flow" doc:id="a4992cad-9e96-4aee-9006-5138c6c09776" >
 		<logger level="INFO" doc:name="Logger" doc:id="f32b1fec-f52d-4b06-ae18-354653fea900" message="bookstore_delete-book-by-id_main-flow started."/>
+		<try doc:name="Try" doc:id="e0d274d0-19c3-4193-893f-119462d7399e" >
+			<logger level="INFO" doc:name="Logger" doc:id="baf3f9ff-d9ac-45f6-bc0d-994371504a93" message="Inside try block"/>
+			<raise-error doc:name="Raise error" doc:id="e883968f-2c2d-4c25-a22a-367a77413c82" type="BOOKS:INVALID_ID" description="Custom error created for this flow."/>
+			<error-handler >
+				<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="cd75e36b-28af-4e58-99ba-859357687516" >
+					<logger level="INFO" doc:name="Logger" doc:id="b32d6cc5-c3a9-4f4a-86c6-2497de60e580" message="On error continue logged."/>
+				</on-error-continue>
+			</error-handler>
+		</try>
 	</flow>
 </mule>
