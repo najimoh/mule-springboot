@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="bookstore_get-all-books_main-flow" doc:id="f1210cdd-f5ab-4027-babe-66893530e64c" >
+		<logger level="INFO" doc:name="Logger" doc:id="22c68683-ec84-4891-812d-54a511b55184" message="bookstore_get-all-books_main-flow started."/>
+		<set-variable value="#[[]]" doc:name="foreachResults" doc:id="b6e0cd8d-8c11-4091-b48e-44190f1c67ac" variableName="foreachResults"/>
+		<foreach doc:name="For Each" doc:id="fc5300b4-0880-4be6-b412-d3d165b613a9" collection="#[payload.books]">
+			<logger level="INFO" doc:name="Logger" doc:id="730b2bd4-f12e-4bd8-8d86-4ab664b11f5c" message="For each payload content is: #[payload]"/>
+			<ee:transform doc:name="Transform Message" doc:id="6913c320-4b82-464c-b1f0-c84c597f9fe3" >
+				<ee:message >
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="foreachResults" ><![CDATA[%dw 2.0
+output application/json
+---
+vars.foreachResults ++ [payload ++ counter: vars.counter]]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+		</foreach>
+		<set-payload value="#[vars.foreachResults]" doc:name="Set Payload" doc:id="bbcb6716-b752-46e1-8819-fccde6c10a57" />
+		<logger level="INFO" doc:name="Logger" doc:id="af024dc0-9183-498d-bfe9-791794eab6f9" message="bookstore_get-all-books_main-flow ended."/>
+	</flow>
+	<flow name="bookstore_get-book-by-id_main-flow" doc:id="ca9fcae9-bffb-4138-af60-1ecbe5967d14" >
+		<logger level="INFO" doc:name="Logger" doc:id="d5f92c2f-ddd8-4316-8c59-8985587405ea" message="bookstore_get-book-by-id_main-flow started."/>
+		<choice doc:name="Choice" doc:id="031f7cea-b350-44f9-a7c6-c48f8d3e91b7" >
+			<when expression="#[vars.isbn &lt;=1000]">
+				<logger level="INFO" doc:name="Logger" doc:id="b4d790b4-9ec8-4abe-a6e6-e355bacd9033" message="ISBN less than 1000."/>
+			</when>
+			<otherwise >
+				<logger level="INFO" doc:name="Logger" doc:id="43a97b8d-c7cc-4355-9cbf-022c04ae2268" message="ISBN more than 1000."/>
+			</otherwise>
+		</choice>
+	</flow>
+	<flow name="bookstore_create-book_main-flow" doc:id="5655f68f-2234-476d-af88-e9699b973252" >
+		<logger level="INFO" doc:name="Logger" doc:id="bb45f91a-4c5f-4f44-8b1d-d34e21952436" message="bookstore_create-book_main-flow started."/>
+		<flow-ref doc:name="bookstore_create-book-in-database_flow" doc:id="6b8002e9-8e7b-4014-9a74-182c614dd19a" name="bookstore_create-book-in-database_flow"/>
+	</flow>
+	<sub-flow name="bookstore_create-book-in-database_flow" doc:id="6c14a301-e391-4131-973d-7a24dfa1fb90" >
+		<logger level="INFO" doc:name="Logger" doc:id="0b2d97e1-2e45-48f0-bcd8-68da99de6768" message="bookstore_create-book-in-database_flow started."/>
+	</sub-flow>
+	<flow name="bookstore_update-book-by-id_main-flow" doc:id="ec155830-e487-4a7e-ac19-9d39f6b35261" >
+		<logger level="INFO" doc:name="Logger" doc:id="65e9d2c1-f914-4ef8-872e-56b90c38374b" message="bookstore_update-book-by-id_main-flow started."/>
+	</flow>
+	<flow name="bookstore_delete-book-by-id_main-flow" doc:id="a4992cad-9e96-4aee-9006-5138c6c09776" >
+		<logger level="INFO" doc:name="Logger" doc:id="f32b1fec-f52d-4b06-ae18-354653fea900" message="bookstore_delete-book-by-id_main-flow started."/>
+	</flow>
+</mule>

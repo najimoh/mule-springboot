@@ -1,0 +1,8 @@
+{
+  "sampleData": {
+    "6913c320-4b82-464c-b1f0-c84c597f9fe3": {
+      "vars-counter": "sample_data/defaultnumbertype.dwl",
+      "payload": "sample_data/json.json"
+    }
+  }
+}

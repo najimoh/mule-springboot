@@ -1,0 +1,7 @@
+%dw 2.0
+
+type auto_f1210cdd_f5ab_4027_babe_66893530e64c_Output_Payload = {
+  books: Array<{|    website: String,     pages: Number,     author: String,     isbn: String,     subtitle: String,     publisher: String,     description: String,     published: String,     title: String  |}>, 
+  _?: Any
+}
+
