@@ -10,8 +10,8 @@
 
 
     <Appenders>
-        <RollingFile name="file" fileName="${sys:mule.home}${sys:file.separator}logs${sys:file.separator}mule-springboot-3.log" 
-                 filePattern="${sys:mule.home}${sys:file.separator}logs${sys:file.separator}mule-springboot-3-%i.log">
+        <RollingFile name="file" fileName="${sys:mule.home}${sys:file.separator}logs${sys:file.separator}mule-springboot.log" 
+                 filePattern="${sys:mule.home}${sys:file.separator}logs${sys:file.separator}mule-springboot-%i.log">
             <PatternLayout pattern="%d [%t] %-5p %c - %m%n" />
             <SizeBasedTriggeringPolicy size="10 MB" />
             <DefaultRolloverStrategy max="10"/>
