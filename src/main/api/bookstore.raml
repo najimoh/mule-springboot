@@ -1,0 +1,81 @@
+#%RAML 1.0
+title: Book Store Api
+version: 1.0.0
+
+baseUri: http://localhost:8081
+mediaType:  application/json
+
+types:
+  book: 
+    type: !include types/book.raml
+    example: !include examples/book.json
+  book-collection:
+    type: object
+    example: !include examples/books-collection.json
+    properties:
+      books:
+        type: array
+        items: book
+
+
+/books:
+  displayName: Books Store
+  get:
+    responses:
+      200:
+        body:
+          application/json:
+            type: book-collection
+
+  post:
+    body:
+      application/json:
+        type: book
+    responses:
+      201:
+        description: Book has been successfully created.
+      409:
+        description: Book already exists.
+  /{isbn}:
+    displayName: Book
+    uriParameters:
+      isbn:
+        description: |
+          Book Identifier
+        required: true
+    get:
+      description: Retrieve book-related information.
+      responses:
+        200:
+          body:
+            application/json:
+              type: book
+
+    put:
+      description: Update book information.
+      queryParameters:
+        googleBookTitle:
+          description: |
+            Book Identifier
+          required: false
+          type: boolean
+      body:
+         application/json:
+          type: book
+
+      responses:
+        204:
+          description: |
+            The book has been successfully updated.
+        404:
+          description: |
+            Unable to find book ... check Book ISBN.
+    delete:
+      description: Remove book from the Store.
+      responses:
+        204:
+          description: |
+            The book has been successfully removed.
+        404:
+          description: |
+            Unable to find book ... check Book ISBN.

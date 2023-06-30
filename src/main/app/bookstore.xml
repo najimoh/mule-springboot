@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/apikit" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:spring="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/apikit http://www.mulesoft.org/schema/mule/apikit/current/mule-apikit.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd">
+    <apikit:config name="bookstore-config" raml="bookstore.raml" consoleEnabled="false" doc:name="Router"/>
+    <flow name="bookstore-main">
+        <http:listener config-ref="bookstore-httpListenerConfig" path="/api/*" doc:name="HTTP"/>
+        <apikit:router config-ref="bookstore-config" doc:name="APIkit Router"/>
+        <exception-strategy ref="bookstore-apiKitGlobalExceptionMapping" doc:name="Reference Exception Strategy"/>
+    </flow>
+    <flow name="bookstore-console">
+        <http:listener config-ref="bookstore-httpListenerConfig" path="/console/*" doc:name="HTTP"/>
+        <apikit:console config-ref="bookstore-config" doc:name="APIkit Console"/>
+    </flow>
+    <flow name="put:/books/{isbn}:application/json:bookstore-config">
+        <set-payload value="#[NullPayload.getInstance()]" doc:name="Set Payload"/>
+    </flow>
+    <flow name="delete:/books/{isbn}:bookstore-config">
+        <set-payload value="#[NullPayload.getInstance()]" doc:name="Set Payload"/>
+    </flow>
+    <flow name="get:/books/{isbn}:bookstore-config">
+        <set-payload value="{&#xD;&#xA;&#x9;&quot;isbn&quot;:&quot;9781593279509&quot;,&#xD;&#xA;&#x9;&quot;title&quot;:&quot;Eloquent JavaScript, Third Edition&quot;,&#xD;&#xA;&#x9;&quot;subtitle&quot;:&quot;A Modern Introduction to Programming&quot;,&#xD;&#xA;&#x9;&quot;author&quot;:&quot;Marijn Haverbeke&quot;,&#xD;&#xA;&#x9;&quot;published&quot;:&quot;2018-12-04T00:00:00.000Z&quot;,&#xD;&#xA;&#x9;&quot;publisher&quot;:&quot;No Starch Press&quot;,&#xD;&#xA;&#x9;&quot;pages&quot;:472,&#xD;&#xA;&#x9;&quot;description&quot;:&quot;JavaScript lies at the heart of almost every modern web application, from social apps like Twitter to browser-based game frameworks like Phaser and Babylon. Though simple for beginners to pick up and play with, JavaScript is a flexible, complex language that you can use to build full-scale applications.&quot;,&#xD;&#xA;&#x9;&quot;website&quot;:&quot;http://eloquentjavascript.net/&quot;&#xD;&#xA;}" doc:name="Set Payload"/>
+    </flow>
+    <flow name="get:/books:bookstore-config">
+        <set-payload value="{&#xD;&#xA;    &quot;books&quot;:[&#xD;&#xA;        {&#xD;&#xA;            &quot;isbn&quot;:&quot;9781593279509&quot;,&#xD;&#xA;            &quot;title&quot;:&quot;Eloquent JavaScript, Third Edition&quot;,&#xD;&#xA;            &quot;subtitle&quot;:&quot;A Modern Introduction to Programming&quot;,&#xD;&#xA;            &quot;author&quot;:&quot;Marijn Haverbeke&quot;,&#xD;&#xA;            &quot;published&quot;:&quot;2018-12-04T00:00:00.000Z&quot;,&#xD;&#xA;            &quot;publisher&quot;:&quot;No Starch Press&quot;,&#xD;&#xA;            &quot;pages&quot;:472,&#xD;&#xA;            &quot;description&quot;:&quot;JavaScript lies at the heart of almost every modern web application, from social apps like Twitter to browser-based game frameworks like Phaser and Babylon. Though simple for beginners to pick up and play with, JavaScript is a flexible, complex language that you can use to build full-scale applications.&quot;,&#xD;&#xA;            &quot;website&quot;:&quot;http://eloquentjavascript.net/&quot;&#xD;&#xA;        },&#xD;&#xA;        {&#xD;&#xA;            &quot;isbn&quot;:&quot;9781491943533&quot;,&#xD;&#xA;            &quot;title&quot;:&quot;Practical Modern JavaScript&quot;,&#xD;&#xA;            &quot;subtitle&quot;:&quot;Dive into ES6 and the Future of JavaScript&quot;,&#xD;&#xA;            &quot;author&quot;:&quot;Nicolás Bevacqua&quot;,&#xD;&#xA;            &quot;published&quot;:&quot;2017-07-16T00:00:00.000Z&quot;,&#xD;&#xA;            &quot;publisher&quot;:&quot;O'Reilly Media&quot;,&#xD;&#xA;            &quot;pages&quot;:334,&#xD;&#xA;            &quot;description&quot;:&quot;To get the most out of modern JavaScript, you need learn the latest features of its parent specification, ECMAScript 6 (ES6). This book provides a highly practical look at ES6, without getting lost in the specification or its implementation details.&quot;,&#xD;&#xA;            &quot;website&quot;:&quot;https://github.com/mjavascript/practical-modern-javascript&quot;&#xD;&#xA;        }&#xD;&#xA;    ]&#xD;&#xA;}" doc:name="Set Payload"/>
+    </flow>
+    <flow name="post:/books:application/json:bookstore-config">
+        <set-payload value="#[NullPayload.getInstance()]" doc:name="Set Payload"/>
+    </flow>
+    <apikit:mapping-exception-strategy name="bookstore-apiKitGlobalExceptionMapping">
+        <apikit:mapping statusCode="404">
+            <apikit:exception value="org.mule.module.apikit.exception.NotFoundException" />
+            <set-property propertyName="Content-Type" value="application/json" doc:name="Property"/>
+            <set-payload value="{ &quot;message&quot;: &quot;Resource not found&quot; }" doc:name="Set Payload"/>
+        </apikit:mapping>
+        <apikit:mapping statusCode="405">
+            <apikit:exception value="org.mule.module.apikit.exception.MethodNotAllowedException" />
+            <set-property propertyName="Content-Type" value="application/json" doc:name="Property"/>
+            <set-payload value="{ &quot;message&quot;: &quot;Method not allowed&quot; }" doc:name="Set Payload"/>
+        </apikit:mapping>
+        <apikit:mapping statusCode="415">
+            <apikit:exception value="org.mule.module.apikit.exception.UnsupportedMediaTypeException" />
+            <set-property propertyName="Content-Type" value="application/json" doc:name="Property"/>
+            <set-payload value="{ &quot;message&quot;: &quot;Unsupported media type&quot; }" doc:name="Set Payload"/>
+        </apikit:mapping>
+        <apikit:mapping statusCode="406">
+            <apikit:exception value="org.mule.module.apikit.exception.NotAcceptableException" />
+            <set-property propertyName="Content-Type" value="application/json" doc:name="Property"/>
+            <set-payload value="{ &quot;message&quot;: &quot;Not acceptable&quot; }" doc:name="Set Payload"/>
+        </apikit:mapping>
+        <apikit:mapping statusCode="400">
+            <apikit:exception value="org.mule.module.apikit.exception.BadRequestException" />
+            <set-property propertyName="Content-Type" value="application/json" doc:name="Property"/>
+            <set-payload value="{ &quot;message&quot;: &quot;Bad request&quot; }" doc:name="Set Payload"/>
+        </apikit:mapping>
+    </apikit:mapping-exception-strategy>
+</mule>
