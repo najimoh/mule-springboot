@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="88ddfa32-ba0e-4850-b6fd-d93a484830a1" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<flow name="test-mule-migration-2Flow" doc:id="96360e6b-eaa0-4136-9c39-d6420b189b17" >
+		<http:listener doc:name="Listener" doc:id="523e200c-e124-40dd-93d8-6fe13fa9dda6" config-ref="HTTP_Listener_config" path="/test1"/>
+		<set-payload value="This is sample payload string" doc:name="Set Payload" doc:id="caefa2c1-9828-4a44-8186-c711ecfbcee2" />
+		<logger level="INFO" doc:name="Logger" doc:id="228f5f29-7aac-4726-99e4-8d9d8b9a5d1c" message="Payload content is: #[payload]"/>
+	</flow>
+	<flow name="test-mule-migration-2Flow1" doc:id="9c4c70ca-6db1-4c5f-8e94-a2e6053bbbee" >
+		<http:listener doc:name="Listener" doc:id="453f2eb5-cd30-48f7-9dd3-d76460aa4255" config-ref="HTTP_Listener_config" path="/test2"/>
+		<ee:transform doc:name="Transform Message" doc:id="4994269f-6ef8-42b5-9fbf-ffc020796e5c" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+    "books":[
+        {
+            "isbn":"9781593279509",
+            "title":"Eloquent JavaScript, Third Edition",
+            "subtitle":"A Modern Introduction to Programming",
+            "author":"Marijn Haverbeke",
+            "published":"2018-12-04T00:00:00.000Z",
+            "publisher":"No Starch Press",
+            "pages":472,
+            "description":"JavaScript lies at the heart of almost every modern web application, from social apps like Twitter to browser-based game frameworks like Phaser and Babylon. Though simple for beginners to pick up and play with, JavaScript is a flexible, complex language that you can use to build full-scale applications.",
+            "website":"http://eloquentjavascript.net/"
+        },
+        {
+            "isbn":"9781491943533",
+            "title":"Practical Modern JavaScript",
+            "subtitle":"Dive into ES6 and the Future of JavaScript",
+            "author":"Nicolás Bevacqua",
+            "published":"2017-07-16T00:00:00.000Z",
+            "publisher":"O'Reilly Media",
+            "pages":334,
+            "description":"To get the most out of modern JavaScript, you need learn the latest features of its parent specification, ECMAScript 6 (ES6). This book provides a highly practical look at ES6, without getting lost in the specification or its implementation details.",
+            "website":"https://github.com/mjavascript/practical-modern-javascript"
+        }
+    ]
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="bfe1d524-ef38-483f-b16e-df06caa7eccb" message="Payload content is: #[payload]" />
+	</flow>
+</mule>
